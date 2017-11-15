@@ -5,6 +5,8 @@
  */
 #ifndef DLIBRARY
 #define DLIBRARY
+
+#define D_SYSCLK_FREQ 80000000
 /*
  * Used components. Comment to disable or uncomment to enable.
  */
@@ -16,9 +18,11 @@
    ================================*/
 #include "stdint.h"
 //#include <stm32L053xx.h>
-#include "stm32f10x.h"
+//#include "stm32f10x.h"
+#include "stm32l432xx.h"
 
 #ifdef D_COMPONENT_SYSTICK
+
 	#include "DSysTick.h"
 #endif
 #ifdef D_COMPONENT_USART
