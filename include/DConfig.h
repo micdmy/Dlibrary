@@ -13,6 +13,7 @@
 #define D_COMPONENT_SYSTICK
 //#define D_COMPONENT_USART
 //#define D_COMPONENT_SPI
+#define D_COMPONENT_ADC
 /* ================================
  * Below is code. Not for user use.
    ================================*/
@@ -31,5 +32,9 @@
 #ifdef D_COMPONENT_SPI
 	#include "DSpi.h"
 #endif
+#ifdef D_COMPONENT_ADC
+	#include "DAdc.h"
+#endif
+
 
 #endif //DLIBRARY
