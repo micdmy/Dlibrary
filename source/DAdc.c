@@ -12,17 +12,17 @@ inline static void _enableVoltReg(void);
 inline static void _calibrate(void);
 inline static void _resetConfig(void);
 inline static void _chooseContinuousConverion(void);
-inline static void _chooseCircularDma(void);
+inline static void _chooseDma(void);
 inline static void _oneRegularConversionOnIn5(void);
 inline static void _chooseSamplingTime(void);
 
 /*
  * Sets register values in ADC peripheral.
- * Prepares ADC to work chooose.
+ * Prepares ADC to work choose.
  */
 void adcConfig(void) {
-	_adcEnableInputPin();
-	_adcEnableClks();
+	_enableInputPin();
+	_enableClks();
 	_resetConfig();
 	_setPrescallerAndClkSrc();
 	_deepPowerDownDisable();
@@ -30,14 +30,26 @@ void adcConfig(void) {
 	_calibrate();
 	_enable();
 	_chooseContinuousConverion();
-	_chooseCircularDma();
+	_chooseDma();
 	_oneRegularConversionOnIn5();
 	_chooseSamplingTime();
-
 }
 
-void adcEnable(void) {
+void adcStart(void) {
+	MY_ADC->CR |= ADC_CR_ADSTART;
+}
 
+void MY_ADC_INTERRUPT_HANDLER(void) {
+	if(MY_ADC->ISR & ADC_ISR_OVR) { //ADC overrun error flag
+
+	} else { //unexpected flag, should not occur
+
+	}
+}
+
+void adcStop(void) {
+	MY_ADC->CR |= ADC_CR_ADSTP;
+	//to ensure that ADC has stopped, check if ADC_CR_ADSTART == 0
 }
 
 inline static void _enableClks(void) {
@@ -51,7 +63,7 @@ inline static void _enableInputPin(void) {
 }
 
 inline static void _setPrescallerAndClkSrc(void) {
-	MY_ADC->CCR = ADC_CCR_CKMODE_0; // prescaler = 1, HCLK/1 as source clock
+	MY_ADC_COMMON->CCR = ADC_CCR_CKMODE_0; // prescaler = 1, HCLK/1 as source clock
 }
 
 inline static void _enable(void) {
@@ -87,15 +99,15 @@ inline static void _resetConfig() {
 	MY_ADC->IER = 0x00000000;
 	MY_ADC->CFGR = 0x80000000;
 	MY_ADC->CFGR2 = 0x80000000;
-	MY_ADC->CCR = 0x00000000;
+	MY_ADC_COMMON->CCR = 0x00000000;
 }
 
 inline static void _chooseContinuousConverion(void) {
 	MY_ADC->CFGR |= ADC_CFGR_CONT;
 }
 
-inline static void _chooseCircularDma(void) {
-	MY_ADC->CFGR |= ADC_CFGR_DMACFG | ADC_CFGR_DMAEN;
+inline static void _chooseDma(void) {
+	MY_ADC->CFGR |= ADC_CFGR_DMAEN;
 }
 
 inline static void _regularChannelSequenceLength(uint8_t length_from1_to16) {

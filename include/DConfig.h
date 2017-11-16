@@ -14,6 +14,7 @@
 //#define D_COMPONENT_USART
 //#define D_COMPONENT_SPI
 #define D_COMPONENT_ADC
+#define D_COMPONENT_DMA
 /* ================================
  * Below is code. Not for user use.
    ================================*/
@@ -21,6 +22,8 @@
 //#include <stm32L053xx.h>
 //#include "stm32f10x.h"
 #include "stm32l432xx.h"
+
+#include "DNucleoL432KC.h"
 
 #ifdef D_COMPONENT_SYSTICK
 
@@ -34,6 +37,9 @@
 #endif
 #ifdef D_COMPONENT_ADC
 	#include "DAdc.h"
+#endif
+#ifdef D_COMPONENT_DMA
+	#include "DDma.h"
 #endif
 
 
