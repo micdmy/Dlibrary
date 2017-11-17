@@ -10,6 +10,7 @@
 /*
  * Used components. Comment to disable or uncomment to enable.
  */
+#define D_COMPONENT_LOG
 #define D_COMPONENT_SYSTICK
 //#define D_COMPONENT_USART
 //#define D_COMPONENT_SPI
@@ -41,6 +42,8 @@
 #ifdef D_COMPONENT_DMA
 	#include "DDma.h"
 #endif
-
+#ifdef D_COMPONENT_LOG
+#include "log.h"
+#endif
 
 #endif //DLIBRARY

@@ -26,15 +26,16 @@ void dmaForAdcConfig(volatile uint8_t * memoryBuffer, uint32_t bufferSizeIn16b) 
 
 void dmaForAdcStart(void) {
 	MY_DMA_CH->CCR |= DMA_CCR_EN; //enable DMA channel
+	logAdd(DMA_start);
 }
 
 void DMA_FOR_ADC_INTERRUPT_HANDLER(void) {
 	if(MY_DMA->IFCR & MY_DMA_CH_TEIF) { // DMA transfer error
-
+		logAdd(DMA_int_error);
 	} else if(MY_DMA->IFCR & MY_DMA_CH_TEIF) { //DMA transfer completed
-
+		logAdd(DMA_int_tComplete);
 	} else { //unexpected behavior, should never occur, if DMA_CCR_HTIE disabled
-
+		logAdd(DMA_int_unexpError);
 	}
 }
 #endif //D_COMPONENT_DMA

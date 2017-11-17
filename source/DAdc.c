@@ -37,19 +37,21 @@ void adcConfig(void) {
 
 void adcStart(void) {
 	MY_ADC->CR |= ADC_CR_ADSTART;
+	logAdd(ADC_start);
 }
 
 void MY_ADC_INTERRUPT_HANDLER(void) {
 	if(MY_ADC->ISR & ADC_ISR_OVR) { //ADC overrun error flag
-
+		logAdd(ADC_int_ovr);
 	} else { //unexpected flag, should not occur
-
+		logAdd(ADC_int_ovr);
 	}
 }
 
 void adcStop(void) {
 	MY_ADC->CR |= ADC_CR_ADSTP;
 	//to ensure that ADC has stopped, check if ADC_CR_ADSTART == 0
+	logAdd(ADC_stopCommand);
 }
 
 inline static void _enableClks(void) {
