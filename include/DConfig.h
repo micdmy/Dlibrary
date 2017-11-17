@@ -6,7 +6,7 @@
 #ifndef DLIBRARY
 #define DLIBRARY
 
-#define D_SYSCLK_FREQ 800000000
+#define D_SYSCLK_FREQ 80000000
 /*
  * Used components. Comment to disable or uncomment to enable.
  */
@@ -43,7 +43,7 @@
 	#include "DDma.h"
 #endif
 #ifdef D_COMPONENT_LOG
-#include "log.h"
+	#include "log.h"
 #endif
 
 #endif //DLIBRARY

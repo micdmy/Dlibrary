@@ -30,10 +30,12 @@ void dmaForAdcStart(void) {
 }
 
 void DMA_FOR_ADC_INTERRUPT_HANDLER(void) {
-	if(MY_DMA->IFCR & MY_DMA_CH_TEIF) { // DMA transfer error
+	if(MY_DMA->ISR & MY_DMA_CH_TEIF) { // DMA transfer error
 		logAdd(DMA_int_error);
-	} else if(MY_DMA->IFCR & MY_DMA_CH_TEIF) { //DMA transfer completed
+		MY_DMA->IFCR |= MY_DMA_CH_TEIF; //clear flag
+	} else if(MY_DMA->ISR & MY_DMA_CH_TCIF) { //DMA transfer completed
 		logAdd(DMA_int_tComplete);
+		MY_DMA->IFCR |= MY_DMA_CH_TCIF; //clear flag
 	} else { //unexpected behavior, should never occur, if DMA_CCR_HTIE disabled
 		logAdd(DMA_int_unexpError);
 	}

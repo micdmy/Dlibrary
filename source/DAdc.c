@@ -26,9 +26,16 @@ void adcConfig(void) {
 	_resetConfig();
 	_setPrescallerAndClkSrc();
 	_deepPowerDownDisable();
-	_enableVoltReg();
-	_calibrate();
-	_enable();
+	MY_ADC->CR |= ADC_CR_ADVREGEN;
+	DSysTickDelay(D_SYSCLK_FREQ / 5); //wait 20us, for generator init 200ms
+	MY_ADC->CR |= ADC_CR_ADCAL;
+	while(!(MY_ADC->CR & ADC_CR_ADCAL));
+	//MY_ADC->ISR |= ADC_ISR_ADRDY; //zero ADRDY flag
+	MY_ADC->CR |= ADC_CR_ADEN; //enable ADC
+	while(!(MY_ADC->ISR & ADC_ISR_ADRDY)); //wait until ADC ready
+	//_enableVoltReg();
+	//_calibrate();
+	//_enable();
 	_chooseContinuousConverion();
 	_chooseDma();
 	_oneRegularConversionOnIn5();
@@ -65,11 +72,12 @@ inline static void _enableInputPin(void) {
 }
 
 inline static void _setPrescallerAndClkSrc(void) {
-	MY_ADC_COMMON->CCR = ADC_CCR_CKMODE_0; // prescaler = 1, HCLK/1 as source clock
+	//MY_ADC_COMMON->CCR = ADC_CCR_CKMODE_0; // prescaler = 1, HCLK/1 as source clock
+	MY_ADC_COMMON->CCR = ADC_CCR_CKMODE_0 | ADC_CCR_PRESC_0 | ADC_CCR_PRESC_3; //prescaler =64
 }
 
 inline static void _enable(void) {
-	MY_ADC->ISR |= ADC_ISR_ADRDY; //zero ADRDY flag
+	//MY_ADC->ISR |= ADC_ISR_ADRDY; //zero ADRDY flag
 	MY_ADC->CR |= ADC_CR_ADEN; //enable ADC
 	while(!(MY_ADC->ISR & ADC_ISR_ADRDY)); //wait until ADC ready
 }
@@ -87,13 +95,11 @@ inline static void _disableVoltReg(void) {
 }
 
 inline static void _enableVoltReg(void) {
-	MY_ADC->CR |= ADC_CR_ADVREGEN;
-	DSysTickDelay(D_SYSCLK_FREQ / 50000); //wait 20us, for generator init
+
 }
 
 inline static void _calibrate(void) {
-	MY_ADC->CR |= ADC_CR_ADCAL;
-	while(!(MY_ADC->CR & ADC_CR_ADCAL));
+
 }
 
 inline static void _resetConfig() {
