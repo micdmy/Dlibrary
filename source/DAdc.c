@@ -36,8 +36,10 @@ void adcConfig(void) {
 	//_enableVoltReg();
 	//_calibrate();
 	//_enable();
-	_chooseContinuousConverion();
-	_chooseDma();
+
+	//_chooseContinuousConverion();
+	MY_ADC->CFGR &=~(ADC_CFGR_CONT); //single conversion
+	//_chooseDma();
 	_oneRegularConversionOnIn5();
 	_chooseSamplingTime();
 }
