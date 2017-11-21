@@ -126,7 +126,11 @@ inline static void _regularChannelSequenceLength(uint8_t length_from1_to16) {
 }
 
 inline static void _oneRegularConversionOnIn5(void) {
-	MY_ADC->SQR1 = (ADC_SQR1_SQ1 & 5) | (ADC_SQR1_L & 1); //convert only channel number 5
+#define field_length 6
+#define channel 5
+#define sequence 1
+#define nr_of_sequences 1
+	MY_ADC->SQR1 = (ADC_SQR1_SQ1 & (channel << (field_length*sequence))) | (ADC_SQR1_L & nr_of_sequences); //convert only channel number 5
 }
 
 inline static void _chooseSamplingTime(void) {
