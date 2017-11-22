@@ -14,4 +14,6 @@ void DusartStopReceiveViaInterrupts(void);
 
 void DusartResumeReceiveViaInterrupts(void);
 
+uint32_t DusartSendViaInterrupts(uint8_t * data, uint32_t size);
+
 #endif //D_L4USART_H
