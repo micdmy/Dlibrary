@@ -13,6 +13,7 @@
 #define D_COMPONENT_LOG
 #define D_COMPONENT_SYSTICK
 //#define D_COMPONENT_USART
+#define D_COMPONENT_L4USART
 //#define D_COMPONENT_SPI
 #define D_COMPONENT_ADC
 #define D_COMPONENT_DMA
@@ -32,6 +33,9 @@
 #endif
 #ifdef D_COMPONENT_USART
 	#include "DUsart.h"
+#endif
+#ifdef D_COMPONENT_L4USART
+#include "DL4Usart.h"
 #endif
 #ifdef D_COMPONENT_SPI
 	#include "DSpi.h"
