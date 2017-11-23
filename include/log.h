@@ -11,10 +11,16 @@ typedef enum {
  DMA_int_tComplete,
  DMA_int_unexpError,
  DMA_start,
+ DMA_USART_int_error,
+ DMA_USART_int_tComplete,
+ DMA_USART_int_unexpError,
+ DMA_USART_start,
  ADC_start,
  ADC_int_ovr,
  ADC_int_unexpError,
- ADC_stopCommand
+ ADC_stopCommand,
+ USART_rx_int,
+ USART_tx_int
 }logEntry;
 
 extern logEntry logBuffer[LOG_SIZE];

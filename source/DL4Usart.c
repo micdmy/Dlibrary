@@ -9,20 +9,21 @@ volatile uint32_t sendCount; //counter of already sent data bytes, zeroed in DUs
 volatile uint32_t dataSize;  //number of data bytes to send via interrupt, set in DUsartSendViaInterrupts(), used in DUsartSendingComplete()
 volatile uint8_t * dataPtr;	///pointer to first byte of data to send, set in DUsartSendViaInterrupts(), used in DUsartSendingComplete()
 
-
-
 inline static void _enablePins(void);
 inline static void _enableClks(void);
+inline static void _enableDma(void);
 
 void DusartConfig(void) {
-
 	_enableClks();
 	MY_USART->BRR = 0x567; //57,6baud on fck =80MHz
+	_enableDma();
 	NVIC_EnableIRQ(USART2_IRQn);
 	NVIC_SetPriority(USART2_IRQn, 2);
 	MY_USART->CR1 |= USART_CR1_UE | USART_CR1_RE | USART_CR1_TE | USART_CR1_RXNEIE;
 	_enablePins();
 }
+
+
 
 void DusartStopReceiveViaInterrupts(void) {
 	MY_USART->CR1 &= ~ USART_CR1_RXNEIE;
@@ -45,13 +46,25 @@ uint32_t DusartSendViaInterrupts(uint8_t * data, uint32_t size) {
 	}
 	return 0; //to mute warning
 }
+void DusartSendViaDma(uint8_t * dataToSend, uint32_t length) {
+	/*
+	 * Before starting new transmission, you should be sure,
+	 * that last transmission has completed.
+	 * Wait until USART_ISR_TC is high.
+	 */
+	MY_USART->CR1 &= ~(USART_CR1_TCIE); //disable transmission complete interrupt
+	MY_USART->ICR |= USART_ICR_TCCF; //clear TC flag
+	dmaUsartStartTX(dataToSend, length);
+}
 
 void MY_USART_INTERRUPT_HANDLER(void) {
 	if(MY_USART->ISR & USART_ISR_RXNE) {
 		usartRec[recNum] = MY_USART->RDR;
+		logAdd(USART_rx_int);
 		recNum = (recNum+1) & (USART_REC_L-1); //circle buffer
 	} else
 	if( (MY_USART->ISR & USART_ISR_TC)  ) { 		//transmission of a byte completed
+		logAdd(USART_tx_int);
 		if(sendCount < dataSize) { 					//there is next data byte to send
 			MY_USART->TDR = dataPtr[sendCount++];	//put data byte to transmit data register
 		} else {									//no more data bytes to send
@@ -77,4 +90,9 @@ inline static void _enableClks(void) {
 	RCC->CCIPR |= RCC_CCIPR_USART2SEL_0; //SysClk Clock source
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 }
+
+inline static void _enableDma(void) {
+	MY_USART->CR3 |= USART_CR3_DMAT;
+}
+
 #endif

@@ -8,12 +8,14 @@ extern volatile uint8_t recNum;
 #define MY_USART USART2
 #define MY_USART_INTERRUPT_HANDLER USART2_IRQHandler
 
-void DusartConfig(void);
+extern void DusartConfig(void);
 
-void DusartStopReceiveViaInterrupts(void);
+extern void DusartStopReceiveViaInterrupts(void);
 
-void DusartResumeReceiveViaInterrupts(void);
+extern void DusartResumeReceiveViaInterrupts(void);
 
-uint32_t DusartSendViaInterrupts(uint8_t * data, uint32_t size);
+extern uint32_t DusartSendViaInterrupts(uint8_t * data, uint32_t size);
+
+extern void DusartSendViaDma(uint8_t * dataToSend, uint32_t length);
 
 #endif //D_L4USART_H

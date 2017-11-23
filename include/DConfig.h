@@ -17,6 +17,7 @@
 //#define D_COMPONENT_SPI
 #define D_COMPONENT_ADC
 #define D_COMPONENT_DMA
+#define D_COMPONENT_DMA_USART
 /* ================================
  * Below is code. Not for user use.
    ================================*/
@@ -49,5 +50,7 @@
 #ifdef D_COMPONENT_LOG
 	#include "log.h"
 #endif
-
+#ifdef D_COMPONENT_DMA_USART
+	#include "DDmaUsart.h"
+#endif
 #endif //DLIBRARY
